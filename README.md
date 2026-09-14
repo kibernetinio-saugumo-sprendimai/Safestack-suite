@@ -13,3 +13,8 @@ Seven local-first security and privacy tools. Each project is an independent MVP
 | safestack-incident-kit | Evidence collection bundle |
 
 See each directory README. Run `python -m unittest discover -v` for shared smoke tests.
+
+
+## License
+
+Released under the [MIT License](LICENSE).

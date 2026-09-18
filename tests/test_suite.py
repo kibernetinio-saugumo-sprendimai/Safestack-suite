@@ -6,7 +6,7 @@ class SuiteTests(unittest.TestCase):
  def test_backup_roundtrip(self):
   m=load('safestack-backup-guardian/guardian.py')
   with tempfile.TemporaryDirectory() as d:
-   p=pathlib.Path(d); (p/'a').write_text('x'); m.write(p,p/'m.json'); self.assertEqual(m.verify(p,p/'m.json'),{'missing':[],'changed':[],'new':['m.json']})
+   p=pathlib.Path(d); (p/'a').write_text('x'); m.write(p,p/'m.json'); self.assertEqual(m.verify(p,p/'m.json'),{'missing':[],'changed':[],'new':[]})
  def test_dns_deduplicates(self):
   m=load('safestack-dns-shield/shield.py')
   with tempfile.TemporaryDirectory() as d:

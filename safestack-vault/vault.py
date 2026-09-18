@@ -1,15 +1,24 @@
 """Minimal encrypted JSON vault. The key file must be protected by the OS."""
 import argparse, json, os
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from cryptography.fernet import Fernet
+from safestack_common import atomic_write, read_regular
 
 def create_key(path):
-    p=Path(path); p.write_bytes(Fernet.generate_key()); os.chmod(p,0o600)
+    atomic_write(path, Fernet.generate_key(), 0o600)
 def put(vault,key,name,value):
-    token=Fernet(Path(key).read_bytes()).encrypt(json.dumps({name:value}).encode())
-    Path(vault).write_bytes(token); os.chmod(vault,0o600)
+    fernet = Fernet(read_regular(key))
+    data = {}
+    target = Path(vault)
+    if target.exists():
+        data = json.loads(fernet.decrypt(read_regular(target)))
+    data[name] = value
+    token=fernet.encrypt(json.dumps(data, separators=(',', ':')).encode())
+    atomic_write(vault, token, 0o600)
 def get(vault,key,name):
-    data=json.loads(Fernet(Path(key).read_bytes()).decrypt(Path(vault).read_bytes()))
+    data=json.loads(Fernet(read_regular(key)).decrypt(read_regular(vault)))
     return data[name]
 if __name__=='__main__':
     p=argparse.ArgumentParser(); s=p.add_subparsers(dest='cmd',required=True)

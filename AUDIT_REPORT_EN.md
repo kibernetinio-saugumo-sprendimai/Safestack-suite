@@ -22,6 +22,6 @@ This audit was conducted in compliance with SafeStack utility security standards
 
 ## 2. Test Execution Results
 
-- `tests/test_safestack_suite.py`: PASS (Core utility functionality and input sanitization).
+- `tests/test_suite.py`: PASS (15 tests: cryptographic integrity, input validation, streamed hashing, symlink protection).
 
 Overall Status: **OK**.

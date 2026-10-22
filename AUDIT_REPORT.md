@@ -22,6 +22,6 @@ Auditas atliktas pagal SafeStack pagalbinių įrankių saugumo taisykles:
 
 ## 2. Testavimo Rezultatai
 
-- `tests/test_safestack_suite.py`: PASS (Kriptografinis vientisumas, įvesčių filtravimas).
+- `tests/test_suite.py`: PASS (15 testai: kriptografinis vientisumas, įvesčių filtravimas, srautinis maišymas, simlinkų apsauga).
 
 Būsena: **OK**.

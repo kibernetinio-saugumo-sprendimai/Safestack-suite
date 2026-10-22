@@ -1,4 +1,5 @@
 """Small filesystem helpers shared by the standalone SafeStack tools."""
+import hashlib
 import os
 import tempfile
 from pathlib import Path
@@ -15,6 +16,9 @@ def _parent(path):
 def atomic_write(path, data, mode=0o600):
     target = Path(path).expanduser()
     parent = _parent(target)
+    dest = parent / target.name
+    if dest.is_dir():
+        raise ValueError("target destination must not be a directory")
     fd, temporary = tempfile.mkstemp(prefix=f".{target.name}.", dir=parent)
     try:
         os.fchmod(fd, mode)
@@ -22,7 +26,7 @@ def atomic_write(path, data, mode=0o600):
             stream.write(data)
             stream.flush()
             os.fsync(stream.fileno())
-        os.replace(temporary, parent / target.name)
+        os.replace(temporary, dest)
     except Exception:
         try:
             os.unlink(temporary)
@@ -36,3 +40,15 @@ def read_regular(path):
     if target.is_symlink() or not target.is_file():
         raise ValueError("expected a regular, non-symlink file")
     return target.read_bytes()
+
+
+def sha256_file(path, chunk_size=65536):
+    target = Path(path).expanduser()
+    if target.is_symlink() or not target.is_file():
+        raise ValueError("expected a regular, non-symlink file")
+    hasher = hashlib.sha256()
+    with open(target, "rb") as stream:
+        while chunk := stream.read(chunk_size):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+

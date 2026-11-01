@@ -1,5 +1,6 @@
 """USB Sentinel: File intake integrity and SHA-256 scanning."""
 import argparse
+import json
 from pathlib import Path
 import sys
 
@@ -24,6 +25,5 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description="SafeStack USB Sentinel - Hash intake directory")
     p.add_argument('path', help="Intake path to scan")
     x = p.parse_args()
-    for name, digest in scan(x.path).items():
-        print(f"{digest}  {name}")
+    print(json.dumps(scan(x.path), ensure_ascii=True, indent=2))
 
